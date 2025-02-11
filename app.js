@@ -30,6 +30,7 @@ function showToUsers(data) {
   //example
   let eg = data[0].meanings[1].definitions[0].example;
   if (eg) {
+    document.querySelector(".example").style.display = "block";
     document.querySelector(".example span").innerText = eg;
   } else {
     document.querySelector(".example").style.display = "none";
