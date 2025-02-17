@@ -1,5 +1,7 @@
 let userInput = document.querySelector(".search input");
 let infoText = document.querySelector(".info-text");
+let sound = document.querySelector(".fa-volume-up");
+let audio;
 
 //hide list until search
 let list = document.querySelector("ul");
@@ -8,14 +10,17 @@ list.style.display = "none";
 //show to Users
 function showToUsers(data) {
   console.log(data);
-  list.style.display = "block";
-
-  //word
-  document.querySelector(".word p").innerHTML = data[0].word;
   //to catch the last index value of each
   let lastPhonetic = data[0].phonetics.length - 1;
   let lastMeaning = data[0].meanings.length - 1;
   let lastDefinition = data[0].meanings[lastMeaning].definitions.length - 1;
+  list.style.display = "block";
+
+  //audio
+  audio = new Audio(`${data[0].phonetics[lastPhonetic].audio}`);
+
+  //word
+  document.querySelector(".word p").innerHTML = data[0].word;
 
   //type
   document.querySelector(
@@ -37,12 +42,14 @@ function showToUsers(data) {
 
   //synonyms
   let synonyms = data[0].meanings[lastMeaning].synonyms[0];
+  let synonymsLength = data[0].meanings[lastMeaning].synonyms.length;
   if (synonyms) {
-    for (let i = 0; i < 3; i++) {
-      let items = `<span>${data[0].meanings[lastMeaning].synonyms[i]}</span>`;
+    document.querySelector(".synonyms .list").innerHTML = "";
+    for (let i = 0; i < synonymsLength; i++) {
+      let items = `<span onclick="search_synonyms('${data[0].meanings[lastMeaning].synonyms[i]}')">${data[0].meanings[lastMeaning].synonyms[i]}</span>`;
       document
         .querySelector(".synonyms .list")
-        .insertAdjacentHTML("beforebegin", items);
+        .insertAdjacentHTML("beforeend", items);
     }
   } else {
     document.querySelector(".synonyms").style.display = "none";
@@ -86,3 +93,13 @@ userInput.addEventListener("keyup", (e) => {
 userInput.addEventListener("focus", (_) => {
   list.style.display = "none";
 });
+
+//audio function
+sound.addEventListener("click", (_) => {
+  audio.play();
+});
+
+//search synonyms
+function search_synonyms(synonyms) {
+  searchWords(synonyms);
+}
